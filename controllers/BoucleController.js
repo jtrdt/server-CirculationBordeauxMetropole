@@ -14,3 +14,9 @@ exports.addNewBoucle = (req, res) => {
     });
   });
 };
+
+exports.getOneBoucle = (req, res) => {
+  Boucle.findOne()
+    .then(boucle => res.status(200).json(boucle))
+    .catch(error => res.status(400).json({error}));
+};
