@@ -1,0 +1,21 @@
+{
+  "name": "backend-pcbm",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "Jerome Tridat",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "description": "",
+  "devDependencies": {
+    "dotenv": "^8.2.0",
+    "eslint": "^7.23.0",
+    "eslint-plugin-react": "^7.23.1"
+  }
+}
