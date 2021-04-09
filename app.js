@@ -7,7 +7,7 @@ const db = mongoose.connection;
 
 const boucleRoutes = require('./routes/boucle.js');
 
-mongoose.connect(process.env.DB_HOST, {
+mongoose.connect(process.env.DB_LOCALHOST, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
