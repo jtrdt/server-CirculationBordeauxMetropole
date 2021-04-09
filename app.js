@@ -7,7 +7,7 @@ const db = mongoose.connection;
 
 const boucleRoutes = require('./routes/boucle.js');
 
-mongoose.connect('mongodb://' + process.env.DB_LOCALHOST, {
+mongoose.connect(process.env.DB_HOST, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
@@ -15,6 +15,9 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
   console.log('Connected to MongoDB');
 });
+
+// MARIOOOOOOO
+app.use(express.json());
 
 app.use('/api/boucles', boucleRoutes);
 
