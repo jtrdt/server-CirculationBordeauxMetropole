@@ -6,6 +6,7 @@ const app = express();
 const db = mongoose.connection;
 
 const boucleRoutes = require('./routes/boucle.js');
+const userRoutes = require('./routes/user.js');
 
 mongoose.connect(process.env.DB_LOCALHOST, {
   useNewUrlParser: true,
@@ -20,5 +21,6 @@ db.once('open', () => {
 app.use(express.json());
 
 app.use('/api/boucles', boucleRoutes);
+app.use('/api/users', userRoutes);
 
 module.exports = app;
