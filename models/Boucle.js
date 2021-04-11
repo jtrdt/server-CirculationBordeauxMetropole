@@ -2,8 +2,20 @@ const mongoose = require('mongoose');
 
 const boucleSchema = new mongoose.Schema(
   {
-    postedById: { type: String, required: true },
-    updatedById: String,
+    postedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    },
+    update: [
+      {
+        by: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User'
+        },
+        date: Date
+      }
+    ],
     zone: { type: String, required: true },
     crossroad: { type: String, required: true },
     entry: { type: String, required: true },
