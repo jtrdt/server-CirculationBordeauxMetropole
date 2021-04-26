@@ -2,6 +2,7 @@ const Boucle = require('../models/Boucle.js');
 
 exports.getAllBoucles = (req, res) => {
   Boucle.find()
+    .populate('postedBy', 'name')
     .then((boucle) => res.status(200).json(boucle))
     .catch((error) => res.status(400).json({ error }));
 };
@@ -9,6 +10,7 @@ exports.getAllBoucles = (req, res) => {
 exports.getOneBoucle = (req, res) => {
   const id = req.params.id;
   Boucle.findById(id)
+    .populate('postedBy', 'name')
     .then((boucle) => res.status(200).json(boucle))
     .catch((error) => res.status(400).json({ error }));
 };
@@ -38,6 +40,7 @@ exports.updateOneBoucle = (req, res) => {
 exports.deleteOneBoucle = (req, res) => {
   Boucle.deleteOne({ _id: req.params.id })
     .then(() =>
+    // http rep à trouver
       res.status(999).json({
         message: 'Boucle supprimée'
       })
