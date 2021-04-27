@@ -40,8 +40,7 @@ exports.updateOneBoucle = (req, res) => {
 exports.deleteOneBoucle = (req, res) => {
   Boucle.deleteOne({ _id: req.params.id })
     .then(() =>
-    // http rep à trouver
-      res.status(999).json({
+      res.status(200).json({
         message: 'Boucle supprimée'
       })
     )
