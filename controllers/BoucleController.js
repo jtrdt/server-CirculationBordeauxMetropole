@@ -3,16 +3,18 @@ const Boucle = require('../models/Boucle.js');
 exports.getAllBoucles = (req, res) => {
   Boucle.find()
     .populate('postedBy', 'name')
-    .then((boucle) => res.status(200).json(boucle))
-    .catch((error) => res.status(400).json({ error }));
+    .populate('backInService.by', 'name')
+    .then(boucle => res.status(200).json(boucle))
+    .catch(error => res.status(400).json({ error }));
 };
 
 exports.getOneBoucle = (req, res) => {
   const id = req.params.id;
   Boucle.findById(id)
     .populate('postedBy', 'name')
-    .then((boucle) => res.status(200).json(boucle))
-    .catch((error) => res.status(400).json({ error }));
+    .populate('backInService.by', 'name')
+    .then(boucle => res.status(200).json(boucle))
+    .catch(error => res.status(400).json({ error }));
 };
 
 exports.addNewBoucle = (req, res) => {
@@ -24,7 +26,7 @@ exports.addNewBoucle = (req, res) => {
         message: 'Boucle ajoutée'
       });
     })
-    .catch((error) => res.status(400).json({ error }));
+    .catch(error => res.status(400).json({ error }));
 };
 
 exports.updateOneBoucle = (req, res) => {
@@ -34,7 +36,7 @@ exports.updateOneBoucle = (req, res) => {
         message: 'Boucle mise à jour'
       })
     )
-    .catch((error) => res.status(400).json({ error }));
+    .catch(error => res.status(400).json({ error }));
 };
 
 exports.deleteOneBoucle = (req, res) => {
@@ -44,5 +46,5 @@ exports.deleteOneBoucle = (req, res) => {
         message: 'Boucle supprimée'
       })
     )
-    .catch((error) => res.status(400).json({ error }));
+    .catch(error => res.status(400).json({ error }));
 };
