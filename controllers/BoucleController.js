@@ -22,9 +22,10 @@ exports.addNewBoucle = (req, res) => {
   newBoucle
     .save()
     .then(() => {
-      res.status(201).json({
-        message: 'Boucle ajoutée'
-      });
+      res
+        .set('Location', `/api/boucle/${newBoucle.id}`)
+        .status(201)
+        .send(newBoucle);
     })
     .catch(error => res.status(400).json({ error }));
 };
