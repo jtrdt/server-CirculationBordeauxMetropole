@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User.js');
 
 exports.signup = (req, res) => {
-  const email = req.body.email.toLowerCase(); // expect 'r.rohee@bordeaux-metropole.fr'
+  const email = req.body.email.toLowerCase(); // expect 'r.blabla@bordeaux-metropole.fr'
   const namedot = email.split('@')[0];
   const name = namedot.split('.').join('').toLowerCase();
   User.findOne({ email: req.body.email })
@@ -46,17 +46,12 @@ exports.login = (req, res) => {
           .compare(req.body.password, user.password)
           .then(log => {
             if (log) {
-              res.status(200).json({
-                message: 'login ok',
-                userId: user._id,
-                name: user.name,
-                admin: user.admin,
-                token: jwt.sign(
-                  { userId: user._id, admin: user.admin },
-                  process.env.TOKEN_SECRET_KEY,
-                  { expiresIn: '15min' }
-                )
-              });
+              const token = jwt.sign(
+                { userId: user._id, admin: user.admin, userName: user.name },
+                process.env.TOKEN_SECRET_KEY,
+                { expiresIn: '10min' }
+              );
+              res.status(200).send({ token: token });
             } else {
               res.status(401).json({ error: 'Erreur d\'authentification' });
             }
