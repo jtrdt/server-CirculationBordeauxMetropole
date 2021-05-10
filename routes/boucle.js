@@ -8,6 +8,6 @@ router.get('/', boucleCtrl.getAllBoucles);
 router.get('/:id', boucleCtrl.getOneBoucle);
 router.post('/', auth, boucleCtrl.addNewBoucle);
 router.put('/:id', auth, boucleCtrl.updateOneBoucle);
-router.delete('/:id', auth, boucleCtrl.deleteOneBoucle);
+// router.delete('/:id', auth, boucleCtrl.deleteOneBoucle);
 
 module.exports = router;

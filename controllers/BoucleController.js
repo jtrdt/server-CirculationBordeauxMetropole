@@ -31,7 +31,13 @@ exports.addNewBoucle = (req, res) => {
 };
 
 exports.updateOneBoucle = (req, res) => {
-  Boucle.updateOne({ _id: req.params.id }, { ...req.body })
+  Boucle.updateOne(
+    { _id: req.params.id },
+    {
+      ...req.body,
+      $push: { update: req.body.update }
+    }
+  )
     .then(() =>
       res.status(200).json({
         message: 'Boucle mise à jour'
@@ -40,7 +46,7 @@ exports.updateOneBoucle = (req, res) => {
     .catch(error => res.status(400).json({ error }));
 };
 
-exports.deleteOneBoucle = (req, res) => {
+/* exports.deleteOneBoucle = (req, res) => {
   Boucle.deleteOne({ _id: req.params.id })
     .then(() =>
       res.status(200).json({
@@ -49,3 +55,4 @@ exports.deleteOneBoucle = (req, res) => {
     )
     .catch(error => res.status(400).json({ error }));
 };
+ */
