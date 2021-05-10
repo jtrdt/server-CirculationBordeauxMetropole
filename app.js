@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const helmet = require('helmet');
 const cors = require('cors');
 require('dotenv').config();
 
@@ -25,6 +26,7 @@ var corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(helmet());
 
 app.use('/api/boucles', boucleRoutes);
 app.use('/api/users', userRoutes);
