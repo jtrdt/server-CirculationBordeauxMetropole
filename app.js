@@ -18,7 +18,12 @@ db.once('open', () => {
   console.log('Connected to MongoDB');
 });
 
-app.use(cors());
+var corsOptions = {
+  origin: process.env.URL_FRONT,
+  credentials: true
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use('/api/boucles', boucleRoutes);
