@@ -8,7 +8,7 @@ const boucleSchema = new mongoose.Schema(
       required: true
     },
     // historique des updates ?
-    updates: [
+    update: [
       {
         by: {
           type: mongoose.Schema.Types.ObjectId,
@@ -23,10 +23,10 @@ const boucleSchema = new mongoose.Schema(
     carfId: { type: String, required: true },
     // zone: { type: String, required: true },
     // crossroad: { type: String, required: true },
-    nature: { type: String, enum: ['CENTRALISE', 'LOCAL', 'TETRA'] },
+    nature: { type: String, enum: ['CENTRALISE', 'LOCAL', 'TETRA', 'null'] },
     entry: { type: String, required: true },
     label: { type: String, required: true },
-    comment: { type: String, required: true },
+    comment: { type: String, required: true, trim: true },
     recommissioning: { type: Date },
     toPrecise: { type: Boolean, default: false },
     isUrgent: { type: Boolean, default: false },
