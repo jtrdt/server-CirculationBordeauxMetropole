@@ -7,9 +7,8 @@ module.exports = (req, res, next) => {
     const admin = decodedToken.admin;
     if (!admin) {
       throw 'Pas les droits nécessaires';
-    } else {
-      next();
     }
+    next();
   } catch (error) {
     res.status(401).json({ error });
   }

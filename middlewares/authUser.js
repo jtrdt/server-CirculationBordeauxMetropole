@@ -7,9 +7,8 @@ module.exports = (req, res, next) => {
     const userId = decodedToken.userId;
     if (!userId) {
       throw 'Pas authentifié';
-    } else {
-      next();
     }
+    next();
   } catch (error) {
     res.status(401).json({ error });
   }
