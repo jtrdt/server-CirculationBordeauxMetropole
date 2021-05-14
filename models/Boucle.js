@@ -27,6 +27,16 @@ const boucleSchema = new mongoose.Schema(
     entry: { type: String, required: true },
     label: { type: String, required: true },
     comment: { type: String, required: true, trim: true },
+    comments: [
+      {
+        by: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User'
+        },
+        content: { type: String, required: true, trim: true },
+        date: { type: Date, default: Date.now }
+      }
+    ],
     recommissioning: { type: Date },
     toPrecise: { type: Boolean, default: false },
     isUrgent: { type: Boolean, default: false },

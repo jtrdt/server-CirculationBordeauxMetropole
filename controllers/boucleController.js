@@ -11,7 +11,8 @@ exports.getAllBoucles = async (req, res) => {
     }
     res.status(200).json(boucles);
   } catch (error) {
-    res.status(500).json({ error });
+    res.status(500);
+    console.error(error);
   }
 };
 
@@ -27,7 +28,8 @@ exports.getOneBoucle = async (req, res) => {
     }
     res.status(200).json(boucle);
   } catch (error) {
-    res.status(500).json({ error });
+    res.status(500);
+    console.error(error);
   }
 };
 
@@ -40,32 +42,50 @@ exports.addNewBoucle = async (req, res) => {
       .status(201)
       .send(newBoucle);
   } catch (error) {
-    res.status(500).json({ error });
+    res.status(500);
+    console.error(error);
   }
 };
 
 exports.updateOneBoucle = async (req, res) => {
   try {
-    await Boucle.findOneAndUpdate(
-      { _id: req.params.id },
-      {
-        ...req.body,
-        $push: { update: req.body.update }
-      }
-    );
-    res.status(200).json({ message: 'Boucle mise à jour' });
+    const newComment = req.body.comments;
+    if (newComment) {
+      await Boucle.updateOne(
+        { _id: req.params.id },
+        {
+          $push: {
+            comments: {
+              by: req.body.comments.by,
+              content: req.body.comments.content
+            }
+          }
+        }
+      );
+      res.status(200).json({ message: 'Commentaire ajouté' });
+    } else {
+      await Boucle.updateOne(
+        { _id: req.params.id },
+        {
+          ...req.body
+        }
+      );
+      res.status(200).json({ message: 'Boucle mise à jour' });
+    }
   } catch (error) {
-    res.status(500).json({ error });
+    res.status(500);
+    console.error(error);
   }
 };
 
 exports.deleteOneBoucle = async (req, res) => {
   try {
-    await Boucle.findOneAndDelete({ _id: req.params.id });
+    await Boucle.deleteOne({ _id: req.params.id });
     res.status(200).json({
       message: 'Boucle supprimée'
     });
   } catch (error) {
-    res.status(500).json({ error });
+    res.status(500);
+    console.error(error);
   }
 };
