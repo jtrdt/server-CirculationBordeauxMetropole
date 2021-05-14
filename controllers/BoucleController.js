@@ -11,7 +11,7 @@ exports.getAllBoucles = async (req, res) => {
     }
     res.status(200).json(boucles);
   } catch (error) {
-    res.status(400).json({ error });
+    res.status(500).json({ error });
   }
 };
 
@@ -27,7 +27,7 @@ exports.getOneBoucle = async (req, res) => {
     }
     res.status(200).json(boucle);
   } catch (error) {
-    res.status(400).json({ error });
+    res.status(500).json({ error });
   }
 };
 
@@ -40,13 +40,13 @@ exports.addNewBoucle = async (req, res) => {
       .status(201)
       .send(newBoucle);
   } catch (error) {
-    res.status(400).json({ error });
+    res.status(500).json({ error });
   }
 };
 
 exports.updateOneBoucle = async (req, res) => {
   try {
-    await Boucle.updateOne(
+    await Boucle.findOneAndUpdate(
       { _id: req.params.id },
       {
         ...req.body,
@@ -55,17 +55,17 @@ exports.updateOneBoucle = async (req, res) => {
     );
     res.status(200).json({ message: 'Boucle mise à jour' });
   } catch (error) {
-    res.status(400).json({ error });
+    res.status(500).json({ error });
   }
 };
 
-/* exports.deleteOneBoucle = (req, res) => {
-  Boucle.deleteOne({ _id: req.params.id })
-    .then(() =>
-      res.status(200).json({
-        message: 'Boucle supprimée'
-      })
-    )
-    .catch(error => res.status(400).json({ error }));
+exports.deleteOneBoucle = async (req, res) => {
+  try {
+    await Boucle.findOneAndDelete({ _id: req.params.id });
+    res.status(200).json({
+      message: 'Boucle supprimée'
+    });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
 };
- */
