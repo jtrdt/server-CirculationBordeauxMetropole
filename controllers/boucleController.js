@@ -4,7 +4,7 @@ exports.getAllBoucles = async (req, res) => {
   try {
     const boucles = await Boucle.find()
       .populate('postedBy', 'name')
-      .populate('backInService.by', 'name');
+      .populate('recommissioning.by', 'name');
     if (!boucles) {
       res.status(204);
       return;
@@ -21,7 +21,8 @@ exports.getOneBoucle = async (req, res) => {
     const id = req.params.id;
     const boucle = await Boucle.findById(id)
       .populate('postedBy', 'name')
-      .populate('backInService.by', 'name');
+      .populate('recommissioning.by', 'name')
+      .populate('comments.by', 'name');
     if (!boucle) {
       res.status(204);
       return;
@@ -47,31 +48,61 @@ exports.addNewBoucle = async (req, res) => {
   }
 };
 
-exports.updateOneBoucle = async (req, res) => {
+exports.updateBoucleRecommissioning = async (req, res) => {
+  const recommissioning = req.body.recommissioning;
   try {
-    const newComment = req.body.comments;
-    if (newComment) {
-      await Boucle.updateOne(
-        { _id: req.params.id },
-        {
-          $push: {
-            comments: {
-              by: req.body.comments.by,
-              content: req.body.comments.content
-            }
+    if (!recommissioning) {
+      res.status(400).json({ message: 'Data incorrects' });
+    }
+    await Boucle.updateOne(
+      { _id: req.params.id },
+      {
+        recommissioning
+      }
+    );
+    res.status(200).json({ message: 'Boucle mise à jour' });
+  } catch (error) {
+    res.status(500);
+    console.error(error);
+  }
+};
+
+// peut être à diviser en 2 fonctions envoie / archive
+exports.updateBoucleAdmin = async (req, res) => {
+  const sendedDate = req.body.sendedDate;
+  const isStored = req.body.isStored;
+  try {
+    if (!sendedDate || !isStored) {
+      res.status(400).json({ message: 'Data incorrects' });
+    }
+    await Boucle.updateOne(
+      { _id: req.params.id },
+      {
+        sendedDate,
+        isStored
+      }
+    );
+    res.status(200).json({ message: 'Boucle mise à jour' });
+  } catch (error) {
+    res.status(500);
+    console.error(error);
+  }
+};
+
+exports.addComment = async (req, res) => {
+  try {
+    await Boucle.updateOne(
+      { _id: req.params.id },
+      {
+        $push: {
+          comments: {
+            by: req.body.comments.by,
+            content: req.body.comments.content
           }
         }
-      );
-      res.status(200).json({ message: 'Commentaire ajouté' });
-    } else {
-      await Boucle.updateOne(
-        { _id: req.params.id },
-        {
-          ...req.body
-        }
-      );
-      res.status(200).json({ message: 'Boucle mise à jour' });
-    }
+      }
+    );
+    res.status(200).json({ message: 'Commentaire ajouté' });
   } catch (error) {
     res.status(500);
     console.error(error);
