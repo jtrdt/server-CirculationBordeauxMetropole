@@ -37,13 +37,18 @@ const boucleSchema = new mongoose.Schema(
         date: { type: Date, default: Date.now }
       }
     ],
-    recommissioning: { type: Date },
     toPrecise: { type: Boolean, default: false },
     isUrgent: { type: Boolean, default: false },
-    hasAlert: { type: Boolean, default: false },
-    sendedDate: { type: Date },
+    // hasAlert: { type: Boolean, default: false },
+    sendedDate: {
+      date: { type: Date },
+      by: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+      }
+    },
     // qui a archivé + quand
-    backInService: {
+    recommissioning: {
       date: {
         type: Date
       },
