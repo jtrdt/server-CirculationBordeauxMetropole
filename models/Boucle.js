@@ -7,7 +7,6 @@ const boucleSchema = new mongoose.Schema(
       ref: 'User',
       required: true
     },
-    // historique des updates ?
     update: [
       {
         by: {
@@ -21,8 +20,6 @@ const boucleSchema = new mongoose.Schema(
       }
     ],
     carfId: { type: String, required: true },
-    // zone: { type: String, required: true },
-    // crossroad: { type: String, required: true },
     nature: { type: String, enum: ['CENTRALISE', 'LOCAL', 'TETRA', 'null'] },
     entry: { type: String, required: true },
     label: { type: String, required: true },
@@ -39,7 +36,6 @@ const boucleSchema = new mongoose.Schema(
     ],
     toPrecise: { type: Boolean, default: false },
     isUrgent: { type: Boolean, default: false },
-    // hasAlert: { type: Boolean, default: false },
     sendedDate: {
       date: { type: Date },
       by: {
@@ -47,7 +43,6 @@ const boucleSchema = new mongoose.Schema(
         ref: 'User'
       }
     },
-    // qui a archivé + quand
     recommissioning: {
       date: {
         type: Date
