@@ -67,22 +67,38 @@ exports.updateBoucleRecommissioning = async (req, res) => {
   }
 };
 
-// peut être à diviser en 2 fonctions envoie / archive
-exports.updateBoucleAdmin = async (req, res) => {
-  const sendedDate = req.body.sendedDate;
+exports.storeBoucle = async (req, res) => {
   const isStored = req.body.isStored;
   try {
-    if (!sendedDate || !isStored) {
+    if (!isStored) {
       res.status(400).json({ message: 'Data incorrects' });
     }
     await Boucle.updateOne(
       { _id: req.params.id },
       {
-        sendedDate,
         isStored
       }
     );
-    res.status(200).json({ message: 'Boucle mise à jour' });
+    res.status(200).json({ message: 'Boucle archivée' });
+  } catch (error) {
+    res.status(500);
+    console.error(error);
+  }
+};
+
+exports.sendBoucle = async (req, res) => {
+  const sendedDate = req.body.sendedDate;
+  try {
+    if (!sendedDate) {
+      res.status(400).json({ message: 'Data incorrects' });
+    }
+    await Boucle.updateOne(
+      { _id: req.params.id },
+      {
+        sendedDate
+      }
+    );
+    res.status(200).json({ message: 'Boucle transmise' });
   } catch (error) {
     res.status(500);
     console.error(error);
