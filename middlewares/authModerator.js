@@ -7,7 +7,7 @@ module.exports = (req, res, next) => {
       algorithms: process.env.TOKEN_ALGO
     });
     const admin = decodedToken.role;
-    if (admin !== 'admin') {
+    if (admin !== 'moderator') {
       throw 'Pas les droits nécessaires';
     }
     next();
