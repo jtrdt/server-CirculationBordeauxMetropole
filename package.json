@@ -9,15 +9,16 @@
   "keywords": [],
   "author": "Jerome Tridat",
   "license": "MIT",
+  "description": "",
   "dependencies": {
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "helmet": "^4.6.0",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.12.3"
+    "mongoose": "^5.12.3",
+    "validator": "^13.6.0"
   },
-  "description": "",
   "devDependencies": {
     "dotenv": "^8.2.0",
     "eslint": "^7.23.0",
