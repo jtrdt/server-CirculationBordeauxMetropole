@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 const db = mongoose.connection;
@@ -23,6 +24,11 @@ const dbConnect = async () => {
 
 dbConnect();
 
+const limiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 200
+});
+
 var corsOptions = {
   origin: process.env.URL_FRONT,
   credentials: true
@@ -31,8 +37,9 @@ var corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(helmet());
+app.use(limiter);
 
-app.use('/api/boucle', boucleRoutes);
-app.use('/api/user', userRoutes);
+app.use('/api/boucles', boucleRoutes);
+app.use('/api/users', userRoutes);
 
 module.exports = app;
