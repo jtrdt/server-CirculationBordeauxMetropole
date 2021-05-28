@@ -13,23 +13,23 @@ const boucleSchema = new mongoose.Schema(
     label: { type: String, required: true },
     isUrgent: { type: Boolean, default: false },
     comment: { type: String, required: true, trim: true },
-    comments: [
-      {
-        by: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'User'
-        },
-        content: { type: String, required: true, trim: true },
-        date: { type: Date, default: Date.now }
-      }
-    ],
+    // comments: [
+    //   {
+    //     by: {
+    //       type: mongoose.Schema.Types.ObjectId,
+    //       ref: 'User'
+    //     },
+    //     content: { type: String, required: true, trim: true },
+    //     date: { type: Date, default: Date.now }
+    //   }
+    // ],
     toPrecise: { type: Boolean, default: false },
     sendedDate: {
-      date: { type: Date },
-      by: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-      }
+      date: { type: Date }
+      // by: {
+      //   type: mongoose.Schema.Types.ObjectId,
+      //   ref: 'User'
+      // }
     },
     recommissioning: {
       date: {
@@ -46,19 +46,19 @@ const boucleSchema = new mongoose.Schema(
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
       }
-    },
-    update: [
-      {
-        by: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'User'
-        },
-        date: {
-          type: Date,
-          default: Date.now
-        }
-      }
-    ]
+    }
+    // update: [
+    //   {
+    //     by: {
+    //       type: mongoose.Schema.Types.ObjectId,
+    //       ref: 'User'
+    //     },
+    //     date: {
+    //       type: Date,
+    //       default: Date.now
+    //     }
+    //   }
+    // ]
   },
   { timestamps: true }
 );

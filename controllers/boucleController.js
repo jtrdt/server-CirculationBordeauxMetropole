@@ -6,7 +6,7 @@ exports.getAllBoucles = async (req, res) => {
       .populate('postedBy', 'name')
       .populate('recommissioning.by', 'name');
     if (!boucles) {
-      res.status(204);
+      res.status(404).json({ message: 'Not Found' });
       return;
     }
     res.status(200).json(boucles);
@@ -24,7 +24,7 @@ exports.getOneBoucle = async (req, res) => {
       .populate('recommissioning.by', 'name')
       .populate('comments.by', 'name');
     if (!boucle) {
-      res.status(204);
+      res.status(404).json({ message: 'Not Found' });
       return;
     }
     res.status(200).json(boucle);
@@ -49,10 +49,10 @@ exports.addNewBoucle = async (req, res) => {
 };
 
 exports.updateBoucleRecommissioning = async (req, res) => {
-  const recommissioning = req.body.recommissioning;
   try {
+    const recommissioning = req.body.recommissioning;
     if (!recommissioning) {
-      res.status(400).json({ message: 'Data incorrects' });
+      res.status(204).json({ message: 'No Content' });
     }
     await Boucle.updateOne(
       { _id: req.params.id },
@@ -60,7 +60,7 @@ exports.updateBoucleRecommissioning = async (req, res) => {
         recommissioning
       }
     );
-    res.status(200).json({ message: 'Boucle mise à jour' });
+    res.status(200).json({ message: 'OK' });
   } catch (error) {
     res.status(500);
     console.error(error);
@@ -68,10 +68,10 @@ exports.updateBoucleRecommissioning = async (req, res) => {
 };
 
 exports.storeBoucle = async (req, res) => {
-  const isStored = req.body.isStored;
   try {
+    const isStored = req.body.isStored;
     if (!isStored) {
-      res.status(400).json({ message: 'Data incorrects' });
+      res.status(204).json({ message: 'No Content' });
     }
     await Boucle.updateOne(
       { _id: req.params.id },
@@ -79,7 +79,7 @@ exports.storeBoucle = async (req, res) => {
         isStored
       }
     );
-    res.status(200).json({ message: 'Boucle archivée' });
+    res.status(200).json({ message: 'OK' });
   } catch (error) {
     res.status(500);
     console.error(error);
@@ -87,10 +87,10 @@ exports.storeBoucle = async (req, res) => {
 };
 
 exports.sendBoucle = async (req, res) => {
-  const sendedDate = req.body.sendedDate;
   try {
+    const sendedDate = req.body.sendedDate;
     if (!sendedDate) {
-      res.status(400).json({ message: 'Data incorrects' });
+      res.status(204).json({ message: 'No Content' });
     }
     await Boucle.updateOne(
       { _id: req.params.id },
@@ -98,7 +98,7 @@ exports.sendBoucle = async (req, res) => {
         sendedDate
       }
     );
-    res.status(200).json({ message: 'Boucle transmise' });
+    res.status(200).json({ message: 'OK' });
   } catch (error) {
     res.status(500);
     console.error(error);
@@ -125,8 +125,29 @@ exports.addComment = async (req, res) => {
   }
 };
 
+exports.changeStatus = async (req, res) => {
+  try {
+    // const isUrgent = req.body.isUrgent;
+    // const toPrecise = req.body.toPrecise;
+    // if (!isUrgent || !toPrecise) {
+    //   res.status(400).json({ message: 'No Content' });
+    //   return;
+    // }
+    await Boucle.updateOne({ _id: req.params.id }, { ...req.body });
+    res.status(200).json({ message: 'OK' });
+  } catch (error) {
+    res.status(500);
+    console.error(error);
+  }
+};
+
 exports.deleteOneBoucle = async (req, res) => {
   try {
+    const boucle = await Boucle.findOne({ _id: req.params.id });
+    if (!boucle) {
+      res.status(404).json({ message: 'Not Found' });
+      return;
+    }
     await Boucle.deleteOne({ _id: req.params.id });
     res.status(200).json({
       message: 'Boucle supprimée'
