@@ -11,7 +11,8 @@ module.exports = async (req, res, next) => {
     const userId = decodedToken.userId;
     const user = await User.findById(userId);
     if (!user) {
-      throw 'Pas authentifié';
+      res.status(403).json({ message: 'Pas les droits nécessaires' });
+      return;
     }
     next();
   } catch (error) {

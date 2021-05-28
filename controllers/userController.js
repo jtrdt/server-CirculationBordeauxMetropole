@@ -2,6 +2,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const validator = require('validator');
+const mongoose = require('mongoose');
 
 const User = require('../models/User.js');
 
@@ -17,9 +18,7 @@ exports.signup = async (req, res) => {
       minSymbols: 0
     });
     if (!isEmailOk || !isPasswordOk) {
-      res
-        .status(400)
-        .json({ message: 'Adresse email ou mot de passe incorrect' });
+      res.status(400).json({ message: 'Adresse email ou mot de passe incorrect' });
       return;
     }
     const user = await User.findOne({ email: req.body.email });
@@ -35,6 +34,7 @@ exports.signup = async (req, res) => {
       lastname,
       name,
       email,
+      role: req.body.role,
       password: hashedPasswd
     });
 
@@ -94,13 +94,18 @@ exports.getUser = async (req, res) => {
   try {
     const id = req.params.id;
     const user = await User.findById(id);
-    if (!user) {
-      res.status(404);
+    if (user === null) {
+      res.status(404).json({ message: 'Utilisateur non trouvé' });
       return;
     }
     res.status(200).json(user);
-  } catch (error) {
-    res.status(500).json({ error });
+  } catch (exception) {
+    if (exception instanceof mongoose.Error.ValidationError) {
+      res.status(400).json({ message: exception.message });
+      return;
+    }
+    res.sendStatus(500);
+    console.error(exception);
   }
 };
 
@@ -111,21 +116,21 @@ exports.updateRole = async (req, res) => {
       res.status(204).json({ message: 'No Content' });
       return;
     }
-    const user = await User.updateOne(
-      {
-        _id: req.params.id
-      },
-      {
-        role: req.body.role
-      }
-    );
-    if (!user) {
+    const id = req.params.id;
+    const user = await User.findById(id);
+    if (user === null) {
       res.status(404).json({ message: 'Not Found' });
       return;
     }
+    await User.updateOne({ _id: req.params.id }, { role: req.body.role }, { runValidators: true });
     res.status(200).json({ message: 'Rôle mis à jour avec succès.' });
-  } catch (error) {
-    res.status(500).json({ error });
+  } catch (exception) {
+    if (exception instanceof mongoose.Error.ValidationError) {
+      res.status(400).json({ message: exception.message });
+      return;
+    }
+    res.sendStatus(500);
+    console.error(exception);
   }
 };
 
@@ -138,10 +143,14 @@ exports.deleteUser = async (req, res) => {
     }
     await User.deleteOne({ _id: req.params.id });
     res.status(200).json({
-      message: 'Boucle supprimée'
+      message: 'Utilisateur supprimée'
     });
-  } catch (error) {
+  } catch (exception) {
+    if (exception instanceof mongoose.Error.ValidationError) {
+      res.status(400).json({ message: exception.message });
+      return;
+    }
     res.status(500);
-    console.error(error);
+    console.error(exception);
   }
 };

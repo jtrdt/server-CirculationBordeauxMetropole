@@ -11,7 +11,8 @@ module.exports = async (req, res, next) => {
     const userId = decodedToken.userId;
     const user = await User.findById(userId);
     if (user.role !== 'moderator' && user.role !== 'admin') {
-      throw 'Pas les droits nécessaires';
+      res.status(403).json({ message: 'Pas les droits nécessaires' });
+      return;
     }
     next();
   } catch (error) {
