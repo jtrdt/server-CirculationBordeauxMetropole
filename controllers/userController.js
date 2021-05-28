@@ -17,11 +17,14 @@ exports.signup = async (req, res) => {
       minSymbols: 0
     });
     if (!isEmailOk || !isPasswordOk) {
-      throw 'Adresse email ou mot de passe incorrect';
+      res
+        .status(400)
+        .json({ message: 'Adresse email ou mot de passe incorrect' });
+      return;
     }
     const user = await User.findOne({ email: req.body.email });
     if (user) {
-      res.status(401).json({ message: "Erreur durant l'inscription" });
+      res.status(400).json({ message: "Erreur durant l'inscription" });
       return;
     }
 
@@ -36,7 +39,10 @@ exports.signup = async (req, res) => {
     });
 
     await newUser.save();
-    res.status(201).send(newUser);
+    res
+      .set('Location', `/api/user/${newUser.id}`)
+      .status(201)
+      .json({ message: 'Nouvel utilisateur ajouté avec succès' });
   } catch (error) {
     res.status(500).json({ error });
   }
@@ -61,7 +67,7 @@ exports.login = async (req, res) => {
     const token = jwt.sign(
       { userId: user._id, role: user.role, userName: user.name },
       process.env.TOKEN_SECRET_KEY,
-      { expiresIn: '10min', algorithm: process.env.TOKEN_ALGO }
+      { expiresIn: '2h', algorithm: process.env.TOKEN_ALGO }
     );
     res.status(200).send({ token: token });
   } catch (error) {
@@ -75,9 +81,7 @@ exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.find();
     if (!users) {
-      res
-        .status(400)
-        .json({ message: "Pas d'utilisateur enregistré en base de données" });
+      res.status(404).json({ message: 'Not Found' });
       return;
     }
     res.status(200).json(users);
@@ -91,7 +95,7 @@ exports.getUser = async (req, res) => {
     const id = req.params.id;
     const user = await User.findById(id);
     if (!user) {
-      res.status(204);
+      res.status(404);
       return;
     }
     res.status(200).json(user);
@@ -104,7 +108,8 @@ exports.updateRole = async (req, res) => {
   try {
     const role = req.body.role;
     if (!role) {
-      throw 'Data inccorects';
+      res.status(204).json({ message: 'No Content' });
+      return;
     }
     const user = await User.updateOne(
       {
@@ -115,11 +120,28 @@ exports.updateRole = async (req, res) => {
       }
     );
     if (!user) {
-      res.status(204);
+      res.status(404).json({ message: 'Not Found' });
       return;
     }
     res.status(200).json({ message: 'Rôle mis à jour avec succès.' });
   } catch (error) {
     res.status(500).json({ error });
+  }
+};
+
+exports.deleteUser = async (req, res) => {
+  try {
+    const user = await User.findById({ _id: req.params.id });
+    if (!user) {
+      res.status(404).json({ message: 'Not Found' });
+      return;
+    }
+    await User.deleteOne({ _id: req.params.id });
+    res.status(200).json({
+      message: 'Boucle supprimée'
+    });
+  } catch (error) {
+    res.status(500);
+    console.error(error);
   }
 };

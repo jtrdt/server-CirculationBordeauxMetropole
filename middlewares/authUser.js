@@ -1,13 +1,16 @@
 const jwt = require('jsonwebtoken');
 
-module.exports = (req, res, next) => {
+const User = require('../models/User.js');
+
+module.exports = async (req, res, next) => {
   try {
     const token = req.headers.authorization.split(' ')[1];
     const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET_KEY, {
       algorithms: process.env.TOKEN_ALGO
     });
     const userId = decodedToken.userId;
-    if (!userId) {
+    const user = await User.findById(userId);
+    if (!user) {
       throw 'Pas authentifié';
     }
     next();
