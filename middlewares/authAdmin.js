@@ -12,6 +12,7 @@ module.exports = async (req, res, next) => {
     const user = await User.findById(userId);
     if (user.role !== 'admin') {
       res.status(403).json({ message: 'Pas les droits nécessaires' });
+      return;
     }
     next();
   } catch (error) {

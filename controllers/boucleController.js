@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Boucle = require('../models/Boucle.js');
 
 exports.getAllBoucles = async (req, res) => {
@@ -38,13 +39,14 @@ exports.addNewBoucle = async (req, res) => {
   try {
     const newBoucle = new Boucle({ ...req.body });
     await newBoucle.save();
-    res
-      .set('Location', `/api/boucle/${newBoucle.id}`)
-      .status(201)
-      .send(newBoucle);
-  } catch (error) {
-    res.status(500);
-    console.error(error);
+    res.set('Location', `/api/boucle/${newBoucle.id}`).status(201).send(newBoucle);
+  } catch (exception) {
+    if (exception instanceof mongoose.Error.ValidationError) {
+      res.status(400).json({ message: exception.message });
+      return;
+    }
+    res.sendStatus(500);
+    console.error(exception);
   }
 };
 
@@ -61,9 +63,13 @@ exports.updateBoucleRecommissioning = async (req, res) => {
       }
     );
     res.status(200).json({ message: 'OK' });
-  } catch (error) {
-    res.status(500);
-    console.error(error);
+  } catch (exception) {
+    if (exception instanceof mongoose.Error.ValidationError) {
+      res.status(400).json({ message: exception.message });
+      return;
+    }
+    res.sendStatus(500);
+    console.error(exception);
   }
 };
 
@@ -127,17 +133,15 @@ exports.addComment = async (req, res) => {
 
 exports.changeStatus = async (req, res) => {
   try {
-    // const isUrgent = req.body.isUrgent;
-    // const toPrecise = req.body.toPrecise;
-    // if (!isUrgent || !toPrecise) {
-    //   res.status(400).json({ message: 'No Content' });
-    //   return;
-    // }
-    await Boucle.updateOne({ _id: req.params.id }, { ...req.body });
+    await Boucle.updateOne({ _id: req.params.id }, { ...req.body }, { runValidators: true });
     res.status(200).json({ message: 'OK' });
-  } catch (error) {
+  } catch (exception) {
+    if (exception instanceof mongoose.Error.ValidationError) {
+      res.status(400).json({ message: exception.message });
+      return;
+    }
     res.status(500);
-    console.error(error);
+    console.error(exception);
   }
 };
 
