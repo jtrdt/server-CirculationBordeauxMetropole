@@ -10,6 +10,7 @@ const db = mongoose.connection;
 
 const boucleRoutes = require('./routes/boucle.route.js');
 const userRoutes = require('./routes/user.route.js');
+const authRoutes = require('./routes/auth.route.js');
 
 const dbConnect = async () => {
   await mongoose.connect(process.env.DB_LOCALHOST, {
@@ -39,6 +40,7 @@ app.use(express.json());
 app.use(helmet());
 app.use(limiter);
 
+app.use('/api/auth', authRoutes);
 app.use('/api/boucles', boucleRoutes);
 app.use('/api/users', userRoutes);
 
