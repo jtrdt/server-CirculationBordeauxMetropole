@@ -10,9 +10,8 @@ exports.signup = async (req, res) => {
   try {
     const firstname = req.body.firstname.replace(/\s+/g, '');
     const lastname = req.body.lastname.replace(/\s+/g, '');
-    const name = firstname.charAt(0) + lastname;
-    const email = req.body.email.replace(/\s+/g, '');
-    const isEmailOk = validator.isEmail(email);
+    const username = firstname.charAt(0) + lastname;
+    const isEmailOk = validator.isEmail(req.body.email);
     const isPasswordOk = validator.isStrongPassword(req.body.password, {
       minUppercase: 0,
       minSymbols: 0
@@ -28,12 +27,11 @@ exports.signup = async (req, res) => {
     }
 
     const hashedPasswd = await bcrypt.hash(req.body.password, 10);
-
     const newUser = new User({
       firstname,
       lastname,
-      name,
-      email,
+      username,
+      email: req.body.email,
       role: req.body.role,
       password: hashedPasswd
     });
@@ -52,9 +50,7 @@ exports.login = async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
-      res.status(401).json({
-        message: "Erreur d'authentification"
-      });
+      res.status(401).json({ message: "Erreur d'authentification" });
       return;
     }
 
