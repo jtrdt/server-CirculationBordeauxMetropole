@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const validator = require('validator');
 const mongoose = require('mongoose');
 
-const User = require('../models/User.js');
+const User = require('../models/user.model.js');
 
 exports.signup = async (req, res) => {
   try {

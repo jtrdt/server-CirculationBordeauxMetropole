@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Boucle = require('../models/Boucle.js');
+const Boucle = require('../models/boucle.model.js');
 
 exports.getAllBoucles = async (req, res) => {
   try {

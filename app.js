@@ -8,8 +8,8 @@ const rateLimit = require('express-rate-limit');
 const app = express();
 const db = mongoose.connection;
 
-const boucleRoutes = require('./routes/boucle.js');
-const userRoutes = require('./routes/user.js');
+const boucleRoutes = require('./routes/boucle.route.js');
+const userRoutes = require('./routes/user.route.js');
 
 const dbConnect = async () => {
   await mongoose.connect(process.env.DB_LOCALHOST, {

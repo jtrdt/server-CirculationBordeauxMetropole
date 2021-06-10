@@ -24,6 +24,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: { values: ['admin', 'moderator', 'user'], message: '{VALUE} is not supported' },
       default: 'user'
+    },
+    status: {
+      type: String,
+      enum: ['pending', 'active'],
+      default: 'pending'
     }
   },
   { timestamps: true }
