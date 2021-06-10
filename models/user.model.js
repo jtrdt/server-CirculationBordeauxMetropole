@@ -25,6 +25,10 @@ const userSchema = new mongoose.Schema(
       enum: { values: ['admin', 'moderator', 'user'], message: '{VALUE} is not supported' },
       default: 'user'
     },
+    confirmationCode: {
+      type: String,
+      unique: true
+    },
     status: {
       type: String,
       enum: ['pending', 'active'],

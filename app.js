@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -40,6 +41,12 @@ app.use(express.json());
 app.use(helmet());
 app.use(limiter);
 
+app.get('/', (req, res) => {
+  res.json({
+    message:
+      "Bienvenue dans l'application de gestion des travaux du Poste de Commandement Circulation Bordeaux Métropole"
+  });
+});
 app.use('/api/auth', authRoutes);
 app.use('/api/boucles', boucleRoutes);
 app.use('/api/users', userRoutes);
