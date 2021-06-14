@@ -13,18 +13,15 @@ const boucleRoutes = require('./routes/boucle.route.js');
 const userRoutes = require('./routes/user.route.js');
 const authRoutes = require('./routes/auth.route.js');
 
-const dbConnect = async () => {
-  await mongoose.connect(process.env.DB_LOCALHOST, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  });
-  db.on('error', console.error.bind(console, 'connection error:'));
-  db.once('open', () => {
-    console.log('Connected to MongoDB');
-  });
-};
-
-dbConnect();
+mongoose.connect(process.env.DB_LOCALHOST, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true
+});
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', () => {
+  console.log('Connected to MongoDB');
+});
 
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000,
