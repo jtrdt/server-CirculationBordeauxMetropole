@@ -17,7 +17,9 @@ exports.signup = async (req, res) => {
       minSymbols: 0
     });
     if (!isEmailOk || !isPasswordOk) {
-      res.status(400).json({ message: 'Adresse email ou mot de passe incorrect' });
+      res
+        .status(400)
+        .json({ message: 'Adresse email ou mot de passe incorrect' });
       return;
     }
     const user = await User.findOne({ email: req.body.email });
@@ -27,9 +29,13 @@ exports.signup = async (req, res) => {
     }
 
     const hashedPasswd = await bcrypt.hash(req.body.password, 10);
-    const token = jwt.sign({ email: req.body.email }, process.env.TOKEN_SECRET_KEY, {
-      algorithm: process.env.TOKEN_ALGO
-    });
+    const token = jwt.sign(
+      { email: req.body.email },
+      process.env.TOKEN_SECRET_KEY,
+      {
+        algorithm: process.env.TOKEN_ALGO
+      }
+    );
     const newUser = new User({
       firstname,
       lastname,
@@ -44,7 +50,11 @@ exports.signup = async (req, res) => {
       .set('Location', `/api/users/${newUser.id}`)
       .status(201)
       .send({ message: 'Nouvel utilisateur ajouté avec succès' });
-    nodemailer.sendConfirmationEmail(newUser.firstname, newUser.email, newUser.confirmationCode);
+    nodemailer.sendConfirmationEmail(
+      newUser.firstname,
+      newUser.email,
+      newUser.confirmationCode
+    );
   } catch (error) {
     res.status(500).json({ error });
   }

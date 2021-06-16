@@ -22,7 +22,10 @@ const userSchema = new mongoose.Schema(
     password: { type: String, required: true },
     role: {
       type: String,
-      enum: { values: ['admin', 'moderator', 'user'], message: '{VALUE} is not supported' },
+      enum: {
+        values: ['admin', 'moderator', 'user'],
+        message: '{VALUE} is not supported'
+      },
       default: 'user'
     },
     confirmationCode: {

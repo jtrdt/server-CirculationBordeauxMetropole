@@ -2,7 +2,11 @@ const mongoose = require('mongoose');
 
 const boucleSchema = new mongoose.Schema(
   {
-    postedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    postedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    },
     carfId: { type: String, required: true },
     nature: {
       type: String,

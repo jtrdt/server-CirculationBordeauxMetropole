@@ -39,7 +39,10 @@ exports.addNewBoucle = async (req, res) => {
   try {
     const newBoucle = new Boucle({ ...req.body });
     await newBoucle.save();
-    res.set('Location', `/api/boucle/${newBoucle.id}`).status(201).send(newBoucle);
+    res
+      .set('Location', `/api/boucle/${newBoucle.id}`)
+      .status(201)
+      .send(newBoucle);
   } catch (exception) {
     if (exception instanceof mongoose.Error.ValidationError) {
       res.status(400).json({ message: exception.message });
@@ -133,7 +136,11 @@ exports.addComment = async (req, res) => {
 
 exports.changeStatus = async (req, res) => {
   try {
-    await Boucle.updateOne({ _id: req.params.id }, { ...req.body }, { runValidators: true });
+    await Boucle.updateOne(
+      { _id: req.params.id },
+      { ...req.body },
+      { runValidators: true }
+    );
     res.status(200).json({ message: 'OK' });
   } catch (exception) {
     if (exception instanceof mongoose.Error.ValidationError) {

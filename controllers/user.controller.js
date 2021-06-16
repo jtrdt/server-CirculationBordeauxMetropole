@@ -48,7 +48,11 @@ exports.updateRole = async (req, res) => {
       res.status(404).json({ message: 'Not Found' });
       return;
     }
-    await User.updateOne({ _id: req.params.id }, { role: req.body.role }, { runValidators: true });
+    await User.updateOne(
+      { _id: req.params.id },
+      { role: req.body.role },
+      { runValidators: true }
+    );
     res.status(200).json({ message: 'Rôle mis à jour avec succès.' });
   } catch (exception) {
     if (exception instanceof mongoose.Error.ValidationError) {
