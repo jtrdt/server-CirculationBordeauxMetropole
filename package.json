@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "nodemon server.js"
   },
   "keywords": [],
@@ -25,6 +25,7 @@
     "dotenv": "^8.2.0",
     "eslint": "^7.23.0",
     "eslint-plugin-react": "^7.23.1",
+    "jest": "^27.0.4",
     "nodemon": "^2.0.7"
   }
 }
