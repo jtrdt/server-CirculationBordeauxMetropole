@@ -1,4 +1,3 @@
-/* eslint-disable quotes */
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const validator = require('validator');
@@ -17,14 +16,12 @@ exports.signup = async (req, res) => {
       minSymbols: 0
     });
     if (!isEmailOk || !isPasswordOk) {
-      res
-        .status(400)
-        .json({ message: 'Adresse email ou mot de passe incorrect' });
+      res.status(400).json({ message: 'Bad Request' });
       return;
     }
     const user = await User.findOne({ email: req.body.email });
     if (user) {
-      res.status(400).json({ message: "Erreur durant l'inscription" });
+      res.status(400).json({ message: 'Bad Request' });
       return;
     }
 
@@ -49,7 +46,7 @@ exports.signup = async (req, res) => {
     res
       .set('Location', `/api/users/${newUser.id}`)
       .status(201)
-      .send({ message: 'Nouvel utilisateur ajouté avec succès' });
+      .json({ message: 'Created' });
     nodemailer.sendConfirmationEmail(
       newUser.firstname,
       newUser.email,
@@ -64,20 +61,18 @@ exports.signin = async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
-      res.status(401).json({ message: "Erreur d'authentification" });
+      res.status(401).json({ message: 'Unauthorized' });
       return;
     }
 
     const match = await bcrypt.compare(req.body.password, user.password);
     if (!match) {
-      res.status(401).json({ message: "Erreur d'authentification" });
+      res.status(401).json({ message: 'Unauthorized' });
       return;
     }
 
     if (user.status != 'active') {
-      return res.status(401).send({
-        message: 'Compte en attente de validation. Vérifiez vos emails'
-      });
+      return res.status(403).send({ message: 'Forbidden' });
     }
 
     const token = jwt.sign(
@@ -97,12 +92,12 @@ exports.verifyUser = async (req, res) => {
       confirmationCode: req.params.confirmationCode
     });
     if (!user) {
-      return res.status(404).send({ message: 'Utilisateur inconnu' });
+      return res.status(404).json({ message: 'Not Found' });
     }
     user.status = 'active';
     user.save(err => {
       if (err) {
-        res.status(500).send({ message: err });
+        res.status(500).json({ message: err });
         return;
       }
     });
