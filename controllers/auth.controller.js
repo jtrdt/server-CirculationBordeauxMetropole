@@ -107,4 +107,6 @@ exports.verifyUser = async (req, res) => {
   }
 };
 
+// TODO resend confirmation email
+// TODO mdp oublié
 // TODO logout
