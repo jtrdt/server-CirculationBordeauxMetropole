@@ -9,7 +9,11 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-module.exports.sendConfirmationEmail = async (name, email, confirmationCode) => {
+module.exports.sendConfirmationEmail = async (
+  name,
+  email,
+  confirmationCode
+) => {
   try {
     await transporter.sendMail({
       from: process.env.NODEMAILER_EMAIL,
