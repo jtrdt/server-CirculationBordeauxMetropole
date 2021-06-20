@@ -22,7 +22,7 @@ module.exports.sendConfirmationEmail = async (
       html: `<h1>Email de confirmation</h1>
           <h2>Bonjour ${name} !</h2>
           <p>Merci pour ton inscription. Merci de confirmer ton email en cliquant sur le lien suivant.</p>
-          <a href=http://localhost:8000/api/auth/confirm/${confirmationCode}>Cliquez ici</a>
+          <a href=${process.env.URL_BACK}:${process.env.PORT}/api/auth/confirm/${confirmationCode}>Cliquez ici</a>
           </div>`
     });
   } catch (error) {
