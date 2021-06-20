@@ -12,6 +12,7 @@ const db = mongoose.connection;
 const boucleRoutes = require('./routes/boucle.route.js');
 const userRoutes = require('./routes/user.route.js');
 const authRoutes = require('./routes/auth.route.js');
+const eventRoutes = require('./routes/event.route.js');
 
 mongoose.connect(process.env.DB_LOCALHOST, {
   useNewUrlParser: true,
@@ -44,8 +45,10 @@ app.get('/', (req, res) => {
       "Bienvenue dans l'application de gestion des travaux du Poste de Commandement Circulation Bordeaux Métropole"
   });
 });
+
 app.use('/api/auth', authRoutes);
 app.use('/api/boucles', boucleRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/events', eventRoutes);
 
 module.exports = app;

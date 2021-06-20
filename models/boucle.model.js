@@ -38,7 +38,8 @@ const boucleSchema = new mongoose.Schema(
     isStored: {
       date: { type: Date },
       by: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
-    }
+    },
+    event: { type: mongoose.Schema.Types.ObjectId, ref: 'Event' }
   },
   { timestamps: true }
 );

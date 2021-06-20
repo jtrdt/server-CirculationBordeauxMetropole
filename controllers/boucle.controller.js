@@ -4,8 +4,11 @@ const Boucle = require('../models/boucle.model.js');
 exports.getAllBoucles = async (req, res) => {
   try {
     const boucles = await Boucle.find()
-      .populate('postedBy', 'name')
-      .populate('recommissioning.by', 'name');
+      .populate('postedBy', 'username')
+      .populate('comments.by', 'username')
+      .populate('recommissioning.by', 'username')
+      .populate('event', 'title')
+      .populate('isStored.by', 'username');
     if (!boucles) {
       res.status(404).json({ message: 'Not Found' });
       return;
@@ -21,9 +24,11 @@ exports.getOneBoucle = async (req, res) => {
   try {
     const id = req.params.id;
     const boucle = await Boucle.findById(id)
-      .populate('postedBy', 'name')
-      .populate('recommissioning.by', 'name')
-      .populate('comments.by', 'name');
+      .populate('postedBy', 'username')
+      .populate('comments.by', 'username')
+      .populate('recommissioning.by', 'username')
+      .populate('event', 'title')
+      .populate('isStored.by', 'username');
     if (!boucle) {
       res.status(404).json({ message: 'Not Found' });
       return;
@@ -40,7 +45,7 @@ exports.addNewBoucle = async (req, res) => {
     const newBoucle = new Boucle({ ...req.body });
     await newBoucle.save();
     res
-      .set('Location', `/api/boucle/${newBoucle.id}`)
+      .set('Location', `/api/boucles/${newBoucle.id}`)
       .status(201)
       .send(newBoucle);
   } catch (exception) {
