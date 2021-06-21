@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema(
       trim: true,
       lowercase: true
     },
-    theme: { type: String, enum: ['dark', 'light'], default: 'light' },
+    // theme: { type: String, enum: ['dark', 'light'], default: 'light' },
     password: { type: String, required: true },
     role: {
       type: String,
