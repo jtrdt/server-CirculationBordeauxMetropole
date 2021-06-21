@@ -94,6 +94,7 @@ exports.archiveBoucle = async (req, res) => {
     if (!isArchiveOk) {
       // code HTTP à vérifier
       res.status(404).json({ message: 'Not Found' });
+      return;
     }
     await Boucle.deleteOne({ _id: req.params.id });
     // code HTTP à vérifier
