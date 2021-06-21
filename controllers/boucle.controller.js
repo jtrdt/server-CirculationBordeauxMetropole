@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Boucle = require('../models/boucle.model.js');
+const { Boucle, ArchivedBoucle } = require('../models/boucle.model.js');
 
 exports.getAllBoucles = async (req, res) => {
   try {
@@ -81,22 +81,30 @@ exports.updateBoucleRecommissioning = async (req, res) => {
   }
 };
 
-exports.storeBoucle = async (req, res) => {
+exports.archiveBoucle = async (req, res) => {
   try {
-    const isStored = req.body.isStored;
-    if (!isStored) {
-      res.status(204).json({ message: 'No Content' });
-    }
     await Boucle.updateOne(
       { _id: req.params.id },
-      {
-        isStored
-      }
+      { archive: req.body.archive }
     );
-    res.status(200).json({ message: 'OK' });
-  } catch (error) {
-    res.status(500);
-    console.error(error);
+    const BoucleToArchive = await Boucle.findById(req.params.id);
+    const newArchivedBoucle = new ArchivedBoucle(BoucleToArchive.toJSON());
+    await newArchivedBoucle.save();
+    const isArchiveOk = await ArchivedBoucle.findById(req.params.id);
+    if (!isArchiveOk) {
+      // code HTTP à vérifier
+      res.status(404).json({ message: 'Not Found' });
+    }
+    await Boucle.deleteOne({ _id: req.params.id });
+    // code HTTP à vérifier
+    res.status(201).json('OK');
+  } catch (exception) {
+    if (exception instanceof mongoose.Error.ValidationError) {
+      res.status(400).json({ message: exception.message });
+      return;
+    }
+    res.sendStatus(500);
+    console.error(exception);
   }
 };
 

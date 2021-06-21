@@ -35,7 +35,8 @@ const boucleSchema = new mongoose.Schema(
       date: { type: Date },
       by: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
     },
-    isStored: {
+    archive: { type: Boolean, default: false },
+    archiveBy: {
       date: { type: Date },
       by: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
     },
@@ -44,4 +45,7 @@ const boucleSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model('Boucle', boucleSchema);
+const Boucle = mongoose.model('Boucle', boucleSchema);
+const ArchivedBoucle = mongoose.model('ArchivedBoucle', boucleSchema);
+
+module.exports = { Boucle, ArchivedBoucle };
