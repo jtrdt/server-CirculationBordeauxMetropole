@@ -88,17 +88,19 @@ exports.archiveBoucle = async (req, res) => {
       { archive: req.body.archive }
     );
     const BoucleToArchive = await Boucle.findById(req.params.id);
+    if (!BoucleToArchive) {
+      res.status(404).json({ message: 'Not Found' });
+      return;
+    }
     const newArchivedBoucle = new ArchivedBoucle(BoucleToArchive.toJSON());
     await newArchivedBoucle.save();
     const isArchiveOk = await ArchivedBoucle.findById(req.params.id);
     if (!isArchiveOk) {
-      // code HTTP à vérifier
       res.status(404).json({ message: 'Not Found' });
       return;
     }
     await Boucle.deleteOne({ _id: req.params.id });
-    // code HTTP à vérifier
-    res.status(201).json('OK');
+    res.status(200).json('OK');
   } catch (exception) {
     if (exception instanceof mongoose.Error.ValidationError) {
       res.status(400).json({ message: exception.message });
