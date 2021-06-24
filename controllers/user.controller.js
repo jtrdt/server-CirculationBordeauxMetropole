@@ -1,4 +1,3 @@
-/* eslint-disable quotes */
 const mongoose = require('mongoose');
 
 const User = require('../models/user.model.js');
@@ -21,7 +20,7 @@ exports.getUser = async (req, res) => {
     const id = req.params.id;
     const user = await User.findById(id);
     if (user === null) {
-      res.status(404).json({ message: 'Utilisateur non trouvé' });
+      res.status(404).json({ message: 'Not Found' });
       return;
     }
     res.status(200).json(user);
@@ -53,7 +52,7 @@ exports.updateRole = async (req, res) => {
       { role: req.body.role },
       { runValidators: true }
     );
-    res.status(200).json({ message: 'Rôle mis à jour avec succès.' });
+    res.status(200).json({ message: 'OK' });
   } catch (exception) {
     if (exception instanceof mongoose.Error.ValidationError) {
       res.status(400).json({ message: exception.message });
@@ -72,9 +71,7 @@ exports.deleteUser = async (req, res) => {
       return;
     }
     await User.deleteOne({ _id: req.params.id });
-    res.status(200).json({
-      message: 'Utilisateur supprimée'
-    });
+    res.status(200).json({ message: 'OK' });
   } catch (exception) {
     if (exception instanceof mongoose.Error.ValidationError) {
       res.status(400).json({ message: exception.message });
