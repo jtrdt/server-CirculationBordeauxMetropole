@@ -29,9 +29,7 @@ exports.signup = async (req, res) => {
     const token = jwt.sign(
       { email: req.body.email },
       process.env.TOKEN_SECRET_KEY,
-      {
-        algorithm: process.env.TOKEN_ALGO
-      }
+      { expiresIn: '10min', algorithm: process.env.TOKEN_ALGO }
     );
     const newUser = new User({
       firstname,
@@ -43,15 +41,15 @@ exports.signup = async (req, res) => {
     });
 
     await newUser.save();
-    res
-      .set('Location', `/api/users/${newUser.id}`)
-      .status(201)
-      .json({ message: 'Created' });
-    nodemailer.sendConfirmationEmail(
+    await nodemailer.sendConfirmationEmail(
       newUser.firstname,
       newUser.email,
       newUser.confirmationCode
     );
+    res
+      .set('Location', `/api/users/${newUser.id}`)
+      .status(201)
+      .json({ message: 'Created' });
   } catch (error) {
     res.status(500).json({ error });
   }
@@ -94,19 +92,43 @@ exports.verifyUser = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'Not Found' });
     }
-    user.status = 'active';
-    user.save(err => {
-      if (err) {
-        res.status(500).json({ message: err });
-        return;
-      }
-    });
-    res.redirect(process.env.URL_FRONT);
+    await User.updateOne(
+      { confirmationCode: req.params.confirmationCode },
+      { status: 'active' }
+    );
+    res.status(200).redirect(process.env.URL_FRONT);
   } catch (error) {
     res.status(500).json({ error });
   }
 };
 
-// TODO resend confirmation email
+exports.resendConfirmationCode = async (req, res) => {
+  try {
+    const user = await User.findById({
+      _id: req.params.id
+    });
+    if (!user) {
+      res.status(404).json({ message: 'Not Found' });
+      return;
+    }
+    const newCode = jwt.sign(
+      { email: req.body.email },
+      process.env.TOKEN_SECRET_KEY,
+      { expiresIn: '10min', algorithm: process.env.TOKEN_ALGO }
+    );
+    await User.updateOne(
+      { _id: req.params.id },
+      {
+        confirmationCode: newCode,
+        status: 'pending'
+      }
+    );
+    await nodemailer.sendConfirmationEmail(user.firstname, user.email, newCode);
+    res.status(200).json({ message: 'OK' });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
+
 // TODO mdp oublié
 // TODO logout
