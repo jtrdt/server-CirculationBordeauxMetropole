@@ -7,5 +7,5 @@ app.set(PORT || 3000);
 const server = http.createServer(app);
 
 server.listen(PORT || 3000, () => {
-  console.log(`App listening on port ${PORT}`);
+  console.log(`App listening on port ${PORT || 3000}`);
 });

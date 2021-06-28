@@ -1,5 +1,5 @@
 /* eslint-disable quotes */
-require('dotenv').config();
+require('localenv');
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
@@ -14,7 +14,7 @@ const userRoutes = require('./routes/user.route.js');
 const authRoutes = require('./routes/auth.route.js');
 const eventRoutes = require('./routes/event.route.js');
 
-mongoose.connect(process.env.DB_LOCALHOST, {
+mongoose.connect(process.env.DB_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true
