@@ -1,14 +1,9 @@
-# Projet final DCDEV-EXEC — Jerome Tridat
+# Outil de gestion travaux Poste de commandement circulation de Bordeaux métropole
 
->Outil de gestion travaux Poste de commandement circulation -  Bordeaux métropole
+## Installation
 
-## Getting Started
+- Configure `.env` file before you start.
 
-```bash
-npm install
-```
+## License
 
-
-```bash
-npm start
-```
+MIT
