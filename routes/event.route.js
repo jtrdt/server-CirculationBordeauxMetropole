@@ -8,5 +8,7 @@ const authModerator = require('../middlewares/authModerator.js');
 router.get('/', auth, eventCtrl.getAllEvents);
 router.get('/:id', auth, eventCtrl.getOneEvent);
 router.post('/', authModerator, eventCtrl.addEvent);
+router.put('/:id/enddate', authModerator, eventCtrl.editEndDate);
+router.put('/:id/title', authModerator, eventCtrl.editTitle);
 
 module.exports = router;

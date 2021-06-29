@@ -47,3 +47,39 @@ exports.addEvent = async (req, res) => {
     console.error(exception);
   }
 };
+
+exports.editEndDate = async (req, res) => {
+  try {
+    await Event.updateOne(
+      { _id: req.params.id },
+      { endDate: req.body.endDate },
+      { runValidators: true }
+    );
+    res.status(200).json({ message: 'OK' });
+  } catch (exception) {
+    if (exception instanceof mongoose.Error.CastError) {
+      res.status(400).json({ message: exception.message });
+      return;
+    }
+    res.status(500);
+    console.error(exception);
+  }
+};
+
+exports.editTitle = async (req, res) => {
+  try {
+    await Event.updateOne(
+      { _id: req.params.id },
+      { title: req.body.title },
+      { runValidators: true }
+    );
+    res.status(200).json({ message: 'OK' });
+  } catch (exception) {
+    if (exception instanceof mongoose.Error.ValidationError) {
+      res.status(400).json({ message: exception.message });
+      return;
+    }
+    res.status(500);
+    console.error(exception);
+  }
+};
