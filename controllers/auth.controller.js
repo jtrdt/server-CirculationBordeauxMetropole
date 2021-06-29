@@ -70,7 +70,8 @@ exports.signin = async (req, res) => {
     }
 
     if (user.status != 'active') {
-      return res.status(403).send({ message: 'Forbidden' });
+      res.status(403).send({ message: 'Forbidden' });
+      return;
     }
 
     const token = jwt.sign(
@@ -104,9 +105,7 @@ exports.verifyUser = async (req, res) => {
 
 exports.resendConfirmationCode = async (req, res) => {
   try {
-    const user = await User.findById({
-      _id: req.params.id
-    });
+    const user = await User.findById({ _id: req.params.id });
     if (!user) {
       res.status(404).json({ message: 'Not Found' });
       return;
@@ -118,10 +117,7 @@ exports.resendConfirmationCode = async (req, res) => {
     );
     await User.updateOne(
       { _id: req.params.id },
-      {
-        confirmationCode: newCode,
-        status: 'pending'
-      }
+      { confirmationCode: newCode, status: 'pending' }
     );
     await nodemailer.sendConfirmationEmail(user.firstname, user.email, newCode);
     res.status(200).json({ message: 'OK' });
