@@ -117,12 +117,7 @@ exports.sendBoucle = async (req, res) => {
     if (!sendedDate) {
       res.status(204).json({ message: 'No Content' });
     }
-    await Boucle.updateOne(
-      { _id: req.params.id },
-      {
-        sendedDate
-      }
-    );
+    await Boucle.updateOne({ _id: req.params.id }, { sendedDate });
     res.status(200).json({ message: 'OK' });
   } catch (error) {
     res.status(500);
