@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const helmet = require('helmet');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
+const paginate = require('express-paginate');
 
 const app = express();
 const db = mongoose.connection;
@@ -38,6 +39,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(helmet());
 app.use(limiter);
+app.use(paginate.middleware(10, 50));
 
 app.get('/', (req, res) => {
   res.json({
@@ -45,7 +47,6 @@ app.get('/', (req, res) => {
       "Bienvenue dans l'application de gestion des travaux du Poste de Commandement Circulation Bordeaux Métropole"
   });
 });
-
 app.use('/api/auth', authRoutes);
 app.use('/api/boucles', boucleRoutes);
 app.use('/api/users', userRoutes);
