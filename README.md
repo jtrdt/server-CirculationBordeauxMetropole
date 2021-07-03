@@ -3,6 +3,7 @@
 ## Installation
 
 - Configure `.env` file before you start.
+- `npm start`
 
 ## License
 
