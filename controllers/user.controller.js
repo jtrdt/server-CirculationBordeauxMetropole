@@ -81,21 +81,21 @@ exports.updateRole = async (req, res) => {
   }
 };
 
-exports.deleteUser = async (req, res) => {
-  try {
-    const user = await User.findById({ _id: req.params.id });
-    if (!user) {
-      res.status(404).json({ message: 'Not Found' });
-      return;
-    }
-    await User.deleteOne({ _id: req.params.id });
-    res.status(200).json({ message: 'OK' });
-  } catch (exception) {
-    if (exception instanceof mongoose.Error.ValidationError) {
-      res.status(400).json({ message: exception.message });
-      return;
-    }
-    res.status(500);
-    console.error(exception);
-  }
-};
+// exports.deleteUser = async (req, res) => {
+//   try {
+//     const user = await User.findById({ _id: req.params.id });
+//     if (!user) {
+//       res.status(404).json({ message: 'Not Found' });
+//       return;
+//     }
+//     await User.deleteOne({ _id: req.params.id });
+//     res.status(200).json({ message: 'OK' });
+//   } catch (exception) {
+//     if (exception instanceof mongoose.Error.ValidationError) {
+//       res.status(400).json({ message: exception.message });
+//       return;
+//     }
+//     res.status(500);
+//     console.error(exception);
+//   }
+// };
