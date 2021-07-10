@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const validator = require('validator');
+const crypto = require('crypto');
 
 const User = require('../models/user.model.js');
 const nodemailer = require('../config/nodemailer.config.js');
@@ -51,7 +52,7 @@ exports.signup = async (req, res) => {
       .status(201)
       .json({ message: 'Created' });
   } catch (error) {
-    res.status(500).json({ error });
+    res.status(500).send('error: ' + error);
   }
 };
 
@@ -81,7 +82,7 @@ exports.signin = async (req, res) => {
     );
     res.status(200).send({ token: token });
   } catch (error) {
-    res.status(500).json({ error });
+    res.status(500).send('error: ' + error);
   }
 };
 
@@ -97,9 +98,9 @@ exports.verifyUser = async (req, res) => {
       { confirmationCode: req.params.confirmationCode },
       { status: 'active' }
     );
-    res.status(200).redirect(process.env.URL_FRONT);
+    res.status(200).redirect(process.env.CLIENT_URL);
   } catch (error) {
-    res.status(500).json({ error });
+    res.status(500).send('error: ' + error);
   }
 };
 
@@ -122,9 +123,93 @@ exports.resendConfirmationCode = async (req, res) => {
     await nodemailer.sendConfirmationEmail(user.firstname, user.email, newCode);
     res.status(200).json({ message: 'OK' });
   } catch (error) {
-    res.status(500).json({ error });
+    res.status(500).send('error: ' + error);
   }
 };
 
-// TODO mdp oublié
+exports.requestResetPassword = async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      return res.status(404).json({ message: 'Not Found' });
+    }
+    const token = crypto.randomBytes(32).toString('hex');
+    console.log(token);
+    await nodemailer.sendResetPasswordEmail(user._id, user.email, token);
+    const hashedToken = await bcrypt.hash(token, 10);
+    await User.updateOne(
+      { email: req.body.email },
+      {
+        status: 'pending',
+        recoveryToken: {
+          hash: hashedToken,
+          timestamp: Date.now() + 600000 // 10 min
+        }
+      }
+    );
+    res.status(200).json({ message: 'OK' });
+  } catch (error) {
+    res.status(500).send('error: ' + error);
+  }
+};
+
+exports.updateResetPassword = async (req, res) => {
+  try {
+    const user = await User.findById({ _id: req.query.id });
+    if (!user) {
+      res.status(404).json({ message: 'Not Found' });
+      return;
+    }
+    const isTokenValid = await bcrypt.compare(
+      req.query.token,
+      user.recoveryToken.hash
+    );
+    const isTimeValid = () => {
+      const recoveryDate = user.recoveryToken.timestamp;
+      const now = Date.now();
+      if (recoveryDate < now) {
+        return false;
+      }
+      return true;
+    };
+    console.log(isTimeValid());
+    if (!isTokenValid || !isTimeValid()) {
+      res.status(400).json({ message: 'Token KO' });
+      return;
+    }
+    const newPassword = await bcrypt.hash(req.body.password, 10);
+    await User.updateOne(
+      { _id: req.query.id },
+      {
+        status: 'active',
+        password: newPassword,
+        recoveryToken: {}
+      }
+    );
+    res.status(200).json({ message: 'OK' });
+  } catch (error) {
+    res.status(500).send('error: ' + error);
+  }
+};
+
+exports.updatePassword = async (req, res) => {
+  try {
+    const user = await User.findById({ _id: req.params.id });
+    if (!user) {
+      res.status(404).json({ message: 'Not Found' });
+      return;
+    }
+    const match = await bcrypt.compare(req.body.currentPassword, user.password);
+    if (!match) {
+      res.status(401).json({ message: 'Unauthorized' });
+      return;
+    }
+    const newHash = await bcrypt.hash(req.body.newPassword, 10);
+    await User.updateOne({ _id: req.params.id }, { password: newHash });
+    res.status(200).json({ message: 'OK' });
+  } catch (error) {
+    res.status(500).send('error: ' + error);
+  }
+};
+
 // TODO logout

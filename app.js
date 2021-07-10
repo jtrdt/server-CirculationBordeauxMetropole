@@ -31,7 +31,7 @@ const limiter = rateLimit({
 });
 
 var corsOptions = {
-  origin: process.env.URL_FRONT,
+  origin: process.env.CLIENT_URL,
   credentials: true
 };
 

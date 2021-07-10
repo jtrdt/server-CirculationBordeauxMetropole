@@ -18,7 +18,6 @@ const userSchema = new mongoose.Schema(
       trim: true,
       lowercase: true
     },
-    // theme: { type: String, enum: ['dark', 'light'], default: 'light' },
     password: { type: String, required: true },
     role: {
       type: String,
@@ -36,6 +35,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ['pending', 'active'],
       default: 'pending'
+    },
+    recoveryToken: {
+      hash: { type: String, unique: true },
+      timestamp: { type: Date }
     }
   },
   { timestamps: true }

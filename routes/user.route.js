@@ -8,6 +8,6 @@ const authAdmin = require('../middlewares/authAdmin.js');
 router.get('/', auth, authAdmin, userCtrl.getAllUsers);
 router.get('/:id', auth, authAdmin, userCtrl.getUser);
 router.put('/:id', auth, authAdmin, userCtrl.updateRole);
-router.delete('/:id', authAdmin, userCtrl.deleteUser);
+// router.delete('/:id', authAdmin, userCtrl.deleteUser);
 
 module.exports = router;
