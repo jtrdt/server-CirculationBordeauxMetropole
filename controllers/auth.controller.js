@@ -97,13 +97,13 @@ exports.verifyUser = async (req, res) => {
       confirmationCode: req.params.confirmationCode
     });
     if (!user) {
-      return res.status(404).json({ message: 'Not Found' });
+      return res.status(404).redirect(process.env.CLIENT_URL);
     }
     await User.updateOne(
       { confirmationCode: req.params.confirmationCode },
       { status: 'active' }
     );
-    res.status(200).redirect(process.env.CLIENT_URL);
+    res.status(200).redirect(process.env.CLIENT_URL + '/signup/emailok');
   } catch (error) {
     res.status(500).send('error: ' + error);
   }
@@ -135,6 +135,7 @@ exports.resendConfirmationCode = async (req, res) => {
 exports.requestResetPassword = async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
+    // ???
     if (!user) {
       return res.status(404).json({ message: 'Not Found' });
     }
@@ -160,13 +161,13 @@ exports.requestResetPassword = async (req, res) => {
 
 exports.updateResetPassword = async (req, res) => {
   try {
-    const user = await User.findById({ _id: req.query.id });
+    const user = await User.findById({ _id: req.body.id });
     if (!user) {
       res.status(404).json({ message: 'Not Found' });
       return;
     }
     const isTokenValid = await bcrypt.compare(
-      req.query.token,
+      req.body.token,
       user.recoveryToken.hash
     );
     const isTimeValid = () => {
@@ -177,14 +178,13 @@ exports.updateResetPassword = async (req, res) => {
       }
       return true;
     };
-    console.log(isTimeValid());
     if (!isTokenValid || !isTimeValid()) {
       res.status(400).json({ message: 'Token KO' });
       return;
     }
     const newPassword = await bcrypt.hash(req.body.password, 10);
     await User.updateOne(
-      { _id: req.query.id },
+      { _id: req.body.id },
       {
         status: 'active',
         password: newPassword,
