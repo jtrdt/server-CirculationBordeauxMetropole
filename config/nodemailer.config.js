@@ -44,7 +44,7 @@ module.exports.sendResetPasswordEmail = async (userId, email, token) => {
       subject: '[bordeaux metropole circulation] RESET',
       html: `
         <div>
-          <a href=${process.env.CLIENT_URL}/resetpassword?token=${token}&?user=${userId}>Cliquez ici </a>
+          <a href=${process.env.CLIENT_URL}/password_reset/update?token=${token}&user=${userId}>Cliquez ici</a>
         </div>
       `
     });
