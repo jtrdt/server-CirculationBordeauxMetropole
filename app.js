@@ -41,7 +41,7 @@ app.use(helmet());
 app.use(limiter);
 app.use(paginate.middleware(10, 50));
 
-app.get('/', (req, res) => {
+app.get('/', res => {
   res.json({
     message:
       "Bienvenue dans l'application de gestion des travaux du Poste de Commandement Circulation Bordeaux Métropole"
