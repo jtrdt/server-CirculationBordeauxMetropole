@@ -5,38 +5,50 @@ const { Boucle, ArchivedBoucle } = require('../models/boucle.model.js');
 
 exports.getAllBoucles = async (req, res) => {
   try {
-    const [results, itemCount] = await Promise.all([
-      await Boucle.find({})
-        .populate('postedBy', 'username')
-        .populate('comments.by', 'username')
-        .populate('recommissioning.by', 'username')
-        .populate('event', 'title')
-        .populate('isStored.by', 'username')
-        .limit(req.query.limit)
-        .skip(req.skip)
-        .lean()
-        .exec(),
-      Boucle.countDocuments({})
-    ]);
-    if (itemCount === 0) {
+    // const [results, itemCount] = await Promise.all([
+    //   await Boucle.find({})
+    //     .populate('postedBy', 'username')
+    //     .populate('comments.by', 'username')
+    //     .populate('recommissioning.by', 'username')
+    //     .populate('event', 'title')
+    //     .populate('isStored.by', 'username')
+    //     .limit(req.query.limit)
+    //     .skip(req.skip)
+    //     .lean()
+    //     .exec(),
+    //   Boucle.countDocuments({})
+    // ]);
+    // if (itemCount === 0) {
+    //   res.status(404).json({ message: 'Not Found' });
+    //   return;
+    // }
+    // const pageCount = Math.ceil(itemCount / req.query.limit);
+    // if (req.accepts('json')) {
+    //   res.json({
+    //     object: 'list',
+    //     has_more: paginate.hasNextPages(req)(pageCount),
+    //     data: results
+    //   });
+    // } else {
+    //   res.render('users', {
+    //     users: results,
+    //     pageCount,
+    //     itemCount,
+    //     pages: paginate.getArrayPages(req)(3, pageCount, req.query.page)
+    //   });
+    // }
+    const boucles = await Boucle.find()
+      .populate('postedBy', 'username')
+      .populate('comments.by', 'username')
+      .populate('recommissioning.by', 'username')
+      .populate('event', 'title')
+      .populate('sendedDate.by', 'username')
+      .populate('isStored.by', 'username');
+    if (!boucles) {
       res.status(404).json({ message: 'Not Found' });
       return;
     }
-    const pageCount = Math.ceil(itemCount / req.query.limit);
-    if (req.accepts('json')) {
-      res.json({
-        object: 'list',
-        has_more: paginate.hasNextPages(req)(pageCount),
-        data: results
-      });
-    } else {
-      res.render('users', {
-        users: results,
-        pageCount,
-        itemCount,
-        pages: paginate.getArrayPages(req)(3, pageCount, req.query.page)
-      });
-    }
+    res.status(200).json(boucles);
   } catch (error) {
     res.status(500).json({ error });
   }
@@ -107,7 +119,13 @@ exports.archiveBoucle = async (req, res) => {
   try {
     await Boucle.updateOne(
       { _id: req.params.id },
-      { archive: req.body.archive }
+      {
+        archive: true,
+        archiveBy: {
+          by: req.body.archiveBy.by,
+          date: req.body.archiveBy.date
+        }
+      }
     );
     const BoucleToArchive = await Boucle.findById(req.params.id);
     if (!BoucleToArchive) {
@@ -167,11 +185,47 @@ exports.addComment = async (req, res) => {
   }
 };
 
-exports.changeStatus = async (req, res) => {
+exports.addEvent = async (req, res) => {
   try {
     await Boucle.updateOne(
       { _id: req.params.id },
-      { ...req.body },
+      { event: req.body.eventId },
+      { runValidators: true }
+    );
+    res.status(200).json({ message: 'OK' });
+  } catch (exception) {
+    if (exception instanceof mongoose.Error.ValidationError) {
+      res.status(400).json({ message: exception.message });
+      return;
+    }
+    res.status(500);
+    console.error(exception);
+  }
+};
+
+exports.editUrgent = async (req, res) => {
+  try {
+    await Boucle.updateOne(
+      { _id: req.params.id },
+      { isUrgent: req.body.isUrgent },
+      { runValidators: true }
+    );
+    res.status(200).json({ message: 'OK' });
+  } catch (exception) {
+    if (exception instanceof mongoose.Error.ValidationError) {
+      res.status(400).json({ message: exception.message });
+      return;
+    }
+    res.status(500);
+    console.error(exception);
+  }
+};
+
+exports.editPrecise = async (req, res) => {
+  try {
+    await Boucle.updateOne(
+      { _id: req.params.id },
+      { toPrecise: req.body.isUrgent },
       { runValidators: true }
     );
     res.status(200).json({ message: 'OK' });
