@@ -37,7 +37,7 @@ const userSchema = new mongoose.Schema(
       default: 'pending'
     },
     recoveryToken: {
-      hash: { type: String, unique: true },
+      hash: { type: String },
       timestamp: { type: Date }
     }
   },
