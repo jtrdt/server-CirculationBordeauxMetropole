@@ -41,9 +41,9 @@ exports.getAllBoucles = async (req, res) => {
       .populate('postedBy', 'username')
       .populate('comments.by', 'username')
       .populate('recommissioning.by', 'username')
-      .populate('event', 'title')
+      .populate('event')
       .populate('sendedDate.by', 'username')
-      .populate('isStored.by', 'username');
+      .populate('archiveBy.by', 'username');
     if (!boucles) {
       res.status(404).json({ message: 'Not Found' });
       return;
@@ -187,9 +187,10 @@ exports.addComment = async (req, res) => {
 
 exports.addEvent = async (req, res) => {
   try {
+    const eventId = mongoose.Types.ObjectId(req.body.eventId);
     await Boucle.updateOne(
       { _id: req.params.id },
-      { event: req.body.eventId },
+      { event: eventId },
       { runValidators: true }
     );
     res.status(200).json({ message: 'OK' });
@@ -250,6 +251,59 @@ exports.deleteOneBoucle = async (req, res) => {
     res.status(200).json({
       message: 'Boucle supprimée'
     });
+  } catch (error) {
+    res.status(500);
+    console.error(error);
+  }
+};
+
+exports.getAllArchives = async (req, res) => {
+  try {
+    const boucles = await ArchivedBoucle.find()
+      .populate('postedBy', 'username')
+      .populate('comments.by', 'username')
+      .populate('recommissioning.by', 'username')
+      .populate('event')
+      .populate('sendedDate.by', 'username')
+      .populate('archiveBy.by', 'username');
+    if (!boucles) {
+      res.status(404).json({ message: 'Not Found' });
+      return;
+    }
+    res.status(200).json(boucles);
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
+
+exports.getAllEvents = async (req, res) => {
+  try {
+    const events = await Event.find().populate('postedBy', 'username');
+    if (!events) {
+      res.status(404).json({ message: 'Not Found' });
+      return;
+    }
+    res.status(200).json(events);
+  } catch (error) {
+    res.status(500);
+    console.error(error);
+  }
+};
+
+exports.getOneArchive = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const boucle = await ArchivedBoucle.findById(id)
+      .populate('postedBy', 'username')
+      .populate('comments.by', 'username')
+      .populate('recommissioning.by', 'username')
+      .populate('event', 'title')
+      .populate('isStored.by', 'username');
+    if (!boucle) {
+      res.status(404).json({ message: 'Not Found' });
+      return;
+    }
+    res.status(200).json(boucle);
   } catch (error) {
     res.status(500);
     console.error(error);

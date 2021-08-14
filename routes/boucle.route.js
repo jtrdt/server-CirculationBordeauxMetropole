@@ -7,7 +7,9 @@ const authModerator = require('../middlewares/authModerator.js');
 const authAdmin = require('../middlewares/authAdmin');
 
 router.get('/', boucleCtrl.getAllBoucles);
-router.get('/:id', auth, boucleCtrl.getOneBoucle);
+// router.get('/:id', auth, boucleCtrl.getOneBoucle);
+router.get('/archives/', boucleCtrl.getAllArchives);
+// router.get('/archives/:id', auth, boucleCtrl.getOneArchive);
 router.post('/', auth, boucleCtrl.addNewBoucle);
 router.put('/:id/recommissioning', auth, boucleCtrl.updateBoucleRecommissioning);
 router.put('/:id/archive', auth, authAdmin, boucleCtrl.archiveBoucle);
