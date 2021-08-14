@@ -66,11 +66,12 @@ exports.editEndDate = async (req, res) => {
   }
 };
 
-exports.editTitle = async (req, res) => {
+exports.edit = async (req, res) => {
   try {
     await Event.updateOne(
       { _id: req.params.id },
       { title: req.body.title },
+      { color: req.body.color },
       { runValidators: true }
     );
     res.status(200).json({ message: 'OK' });
