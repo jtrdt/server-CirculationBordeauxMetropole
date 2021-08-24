@@ -48,30 +48,11 @@ exports.addEvent = async (req, res) => {
   }
 };
 
-exports.editEndDate = async (req, res) => {
+exports.editEvent = async (req, res) => {
   try {
     await Event.updateOne(
       { _id: req.params.id },
-      { endDate: req.body.endDate },
-      { runValidators: true }
-    );
-    res.status(200).json({ message: 'OK' });
-  } catch (exception) {
-    if (exception instanceof mongoose.Error.CastError) {
-      res.status(400).json({ message: exception.message });
-      return;
-    }
-    res.status(500);
-    console.error(exception);
-  }
-};
-
-exports.edit = async (req, res) => {
-  try {
-    await Event.updateOne(
-      { _id: req.params.id },
-      { title: req.body.title },
-      { color: req.body.color },
+      { ...req.body },
       { runValidators: true }
     );
     res.status(200).json({ message: 'OK' });
@@ -82,5 +63,20 @@ exports.edit = async (req, res) => {
     }
     res.status(500);
     console.error(exception);
+  }
+};
+
+exports.deleteEvent = async (req, res) => {
+  try {
+    const event = await Event.findOne({ _id: req.params.id });
+    if (!event) {
+      res.status(404).json({ message: 'Not Found' });
+      return;
+    }
+    await Event.deleteOne({ _id: req.params.id });
+    res.status(200).json({ message: 'OK' });
+  } catch (error) {
+    res.status(500);
+    console.error(error);
   }
 };
