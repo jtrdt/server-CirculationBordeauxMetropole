@@ -54,20 +54,34 @@ exports.getAllBoucles = async (req, res) => {
   }
 };
 
-exports.getOneBoucle = async (req, res) => {
+exports.getBoucle = async (req, res) => {
   try {
-    const id = req.params.id;
-    const boucle = await Boucle.findById(id)
+    if (req.query.id) {
+      const id = req.query.id;
+      const boucle = await Boucle.findById(id)
+        .populate('postedBy', 'username')
+        .populate('comments.by', 'username')
+        .populate('recommissioning.by', 'username')
+        .populate('event', 'title')
+        .populate('isStored.by', 'username');
+      if (!boucle) {
+        res.status(404).json({ message: 'Not Found' });
+        return;
+      }
+      return res.status(200).json(boucle);
+    }
+    const boucles = await Boucle.find()
       .populate('postedBy', 'username')
       .populate('comments.by', 'username')
       .populate('recommissioning.by', 'username')
-      .populate('event', 'title')
-      .populate('isStored.by', 'username');
-    if (!boucle) {
+      .populate('event')
+      .populate('sendedDate.by', 'username')
+      .populate('archiveBy.by', 'username');
+    if (!boucles) {
       res.status(404).json({ message: 'Not Found' });
       return;
     }
-    res.status(200).json(boucle);
+    return res.status(200).json(boucles);
   } catch (error) {
     res.status(500);
     console.error(error);
@@ -167,6 +181,10 @@ exports.sendBoucle = async (req, res) => {
 
 exports.addComment = async (req, res) => {
   try {
+    const newComment = req.body.comments;
+    if (!newComment) {
+      res.status(204).json({ message: 'No Content' });
+    }
     await Boucle.updateOne(
       { _id: req.params.id },
       {
