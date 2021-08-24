@@ -327,3 +327,28 @@ exports.getOneArchive = async (req, res) => {
     console.error(error);
   }
 };
+
+exports.deleteOneComment = async (req, res) => {
+  try {
+    const idBoucle = await Boucle.findOne({ _id: req.params.id });
+    const idComment = req.body.id;
+    if (!idBoucle) {
+      res.status(404).json({ message: 'Not Found' });
+      return;
+    }
+    await Boucle.updateOne(
+      { _id: req.params.id },
+      {
+        $pull: {
+          comments: {
+            _id: idComment
+          }
+        }
+      }
+    );
+    res.status(200).json({ message: 'OK' });
+  } catch (error) {
+    res.status(500);
+    console.error(error);
+  }
+};
