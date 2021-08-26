@@ -1,42 +1,9 @@
 const mongoose = require('mongoose');
-const paginate = require('express-paginate');
 
 const { Boucle, ArchivedBoucle } = require('../models/boucle.model.js');
 
 exports.getAllBoucles = async (req, res) => {
   try {
-    // const [results, itemCount] = await Promise.all([
-    //   await Boucle.find({})
-    //     .populate('postedBy', 'username')
-    //     .populate('comments.by', 'username')
-    //     .populate('recommissioning.by', 'username')
-    //     .populate('event', 'title')
-    //     .populate('isStored.by', 'username')
-    //     .limit(req.query.limit)
-    //     .skip(req.skip)
-    //     .lean()
-    //     .exec(),
-    //   Boucle.countDocuments({})
-    // ]);
-    // if (itemCount === 0) {
-    //   res.status(404).json({ message: 'Not Found' });
-    //   return;
-    // }
-    // const pageCount = Math.ceil(itemCount / req.query.limit);
-    // if (req.accepts('json')) {
-    //   res.json({
-    //     object: 'list',
-    //     has_more: paginate.hasNextPages(req)(pageCount),
-    //     data: results
-    //   });
-    // } else {
-    //   res.render('users', {
-    //     users: results,
-    //     pageCount,
-    //     itemCount,
-    //     pages: paginate.getArrayPages(req)(3, pageCount, req.query.page)
-    //   });
-    // }
     const boucles = await Boucle.find()
       .populate('postedBy', 'username')
       .populate('comments.by', 'username')

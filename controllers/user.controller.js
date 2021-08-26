@@ -1,32 +1,9 @@
 const mongoose = require('mongoose');
-const paginate = require('express-paginate');
 
 const User = require('../models/user.model.js');
 
 exports.getAllUsers = async (req, res) => {
   try {
-    // const [results, itemCount] = await Promise.all([
-    //   await User.find({}).limit(req.query.limit).skip(req.skip).lean().exec(),
-    //   User.countDocuments({})
-    // ]);
-    // if (itemCount === 0) {
-    //   res.status(404).json({ message: 'Not Found' });
-    //   return;
-    // }
-    // const pageCount = Math.ceil(itemCount / req.query.limit);
-    // if (req.accepts('json')) {
-    //   res.status(200).json({
-    //     object: 'list',
-    //     has_more: paginate.hasNextPages(req)(pageCount),
-    //     data: results
-    //   });
-    // } else {
-    //   res.render('users', {
-    //     users: results,
-    //     pageCount,
-    //     itemCount,
-    //     pages: paginate.getArrayPages(req)(3, pageCount, req.query.page)
-    //   });
     const users = await User.find();
     if (!users) {
       res.status(404).json({ message: 'Not Found' });

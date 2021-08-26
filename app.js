@@ -5,7 +5,6 @@ const mongoose = require('mongoose');
 const helmet = require('helmet');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
-const paginate = require('express-paginate');
 
 const app = express();
 const db = mongoose.connection;
@@ -39,7 +38,6 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(helmet());
 app.use(limiter);
-app.use(paginate.middleware(10, 50));
 
 app.get('/', res => {
   res.json({
