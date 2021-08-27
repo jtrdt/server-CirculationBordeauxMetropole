@@ -62,7 +62,7 @@ module.exports.sendUpdatedPasswordEmail = async (name, email) => {
     await transporter.sendMail({
       from: process.env.NODEMAILER_EMAIL,
       to: email,
-      subject: '[Circulation BxMetro] RESET',
+      subject: '[Circulation BxMetro] Changement de mot de passe',
       html: `
         <div>
           <p>Le mot de passe de ${name} a été mis à jour avec succès.</p>
