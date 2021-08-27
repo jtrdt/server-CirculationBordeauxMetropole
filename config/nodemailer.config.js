@@ -41,10 +41,14 @@ module.exports.sendResetPasswordEmail = async (userId, email, token) => {
     await transporter.sendMail({
       from: process.env.NODEMAILER_EMAIL,
       to: email,
-      subject: '[bordeaux metropole circulation] RESET',
+      subject: '[Circulation BxMetro] Oubli du mot de passe',
       html: `
         <div>
-          <a href=${process.env.CLIENT_URL}/password_reset/update?token=${token}&user=${userId}>Cliquez ici</a>
+        <p>Un remise à zéro du mot de passe pour l'adresse <a href='mailto:${email}'>${email}</a> a été demandée.
+        <br />
+          Si vous êtes à l'origine de cette demande, <a href=${process.env.CLIENT_URL}/password_reset/update?token=${token}&user=${userId}>cliquez ici</a>.
+          <br />
+          Sinon vous pouvez ignorer ce message.</p>
         </div>
       `
     });
