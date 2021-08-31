@@ -29,8 +29,7 @@ exports.getBoucle = async (req, res) => {
         .populate('postedBy', 'username')
         .populate('comments.by', 'username')
         .populate('recommissioning.by', 'username')
-        .populate('event', 'title')
-        .populate('isStored.by', 'username');
+        .populate('event', 'title');
       if (!boucle) {
         res.status(404).json({ message: 'Not Found' });
         return;
