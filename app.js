@@ -16,8 +16,7 @@ const eventRoutes = require('./routes/event.route.js');
 
 mongoose.connect(process.env.DB_URL, {
   useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true
+  useUnifiedTopology: true
 });
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
@@ -38,7 +37,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(helmet());
 app.use(limiter);
-
+app.get('/api', () => res.send('Listening'));
 app.use('/api/auth', authRoutes);
 app.use('/api/boucles', boucleRoutes);
 app.use('/api/users', userRoutes);
