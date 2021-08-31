@@ -27,7 +27,7 @@ module.exports.sendConfirmationEmail = async (
             <br />
             Pour confirmer votre email, cliquez sur le lien suivant:
           </p>
-          <a href=${process.env.URL_BACK}:${process.env.PORT}/api/auth/confirm/${confirmationCode}>Cliquez ici</a>
+          <a href=${process.env.CLIENT_URL}/auth/confirm/${confirmationCode}>Cliquez ici</a>
         </div>
       `
     });
